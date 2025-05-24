@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
-const STRAPI_UPLOADS_URL = 'http://localhost:1337';
+const API_URL = import.meta.env.VITE_API_URL;
+const STRAPI_UPLOADS_URL = import.meta.env.VITE_BASED_URL;
 
 const getAuthHeader = () => {
   const user = JSON.parse(localStorage.getItem('user'));

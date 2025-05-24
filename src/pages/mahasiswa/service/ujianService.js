@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const fetchUjians = async () => {
   try {
-    const response = await axios.get(`${API_URL}/ujians?populate=*`);
+    const response = await axios.get(`${API_BASE_URL}/ujians?populate=*`);
     return response.data.data;
   } catch (error) {
     console.error('Error fetching ujians:', error);
@@ -21,7 +21,7 @@ const fetchUjiansByMahasiswa = async () => {
     const nim = user.username;
 
     // Fetch mahasiswa data
-    const mahasiswaResponse = await axios.get(`${API_URL}/mahasiswas?filters[nim][$eq]=${nim}&populate=*`);
+    const mahasiswaResponse = await axios.get(`${API_BASE_URL}/mahasiswas?filters[nim][$eq]=${nim}&populate=*`);
     const mahasiswa = mahasiswaResponse.data.data[0];
     if (!mahasiswa) {
       throw new Error('Mahasiswa not found');
@@ -31,7 +31,7 @@ const fetchUjiansByMahasiswa = async () => {
     const undanganIds = mahasiswa.undangan_mahasiswas?.map(u => u.id) || [];
 
     // Fetch matakuliah data
-    const matakuliahResponse = await axios.get(`${API_URL}/matakuliahs?populate=*`);
+    const matakuliahResponse = await axios.get(`${API_BASE_URL}/matakuliahs?populate=*`);
     const matakuliahs = matakuliahResponse.data.data;
 
     // Filter matakuliah by semester and student's undangan_mahasiswas
@@ -41,7 +41,7 @@ const fetchUjiansByMahasiswa = async () => {
     );
 
     // Fetch exams
-    const ujianResponse = await axios.get(`${API_URL}/ujians?populate=*`);
+    const ujianResponse = await axios.get(`${API_BASE_URL}/ujians?populate=*`);
     const ujians = ujianResponse.data.data.filter(ujian => 
       enrolledMatakuliahs.some(matakuliah => 
         matakuliah.ujians?.some(u => u.id === ujian.id)
@@ -50,7 +50,7 @@ const fetchUjiansByMahasiswa = async () => {
 
     // Fetch jawaban-ujians for the mahasiswa
     const jawabanResponse = await axios.get(
-      `${API_URL}/jawaban-ujians?filters[mahasiswa][id][$eq]=${mahasiswaId}&populate[soal_ujian][populate]=*`
+      `${API_BASE_URL}/jawaban-ujians?filters[mahasiswa][id][$eq]=${mahasiswaId}&populate[soal_ujian][populate]=*`
     );
     const jawabanUjians = jawabanResponse.data.data;
 
@@ -71,7 +71,7 @@ const fetchUjiansByMahasiswa = async () => {
 
 const fetchMahasiswas = async () => {
   try {
-    const response = await axios.get(`${API_URL}/mahasiswas?populate=*`);
+    const response = await axios.get(`${API_BASE_URL}/mahasiswas?populate=*`);
     return response.data.data;
   } catch (error) {
     console.error('Error fetching mahasiswas:', error);
@@ -81,7 +81,7 @@ const fetchMahasiswas = async () => {
 
 const fetchMatakuliahs = async () => {
   try {
-    const response = await axios.get(`${API_URL}/matakuliahs?populate=*`);
+    const response = await axios.get(`${API_BASE_URL}/matakuliahs?populate=*`);
     return response.data.data;
   } catch (error) {
     console.error('Error fetching matakuliahs:', error);
@@ -95,7 +95,7 @@ const submitJawabanUjian = async (jawabanData) => {
     const response = await Promise.all(
       jawabanData.map(async (item) => {
         return await axios.post(
-          `${API_URL}/jawaban-ujians`,
+          `${API_BASE_URL}/jawaban-ujians`,
           {
             data: {
               jawaban: item.jawaban,

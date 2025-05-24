@@ -1,14 +1,16 @@
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 export const fetchEnrolledCourses = async (nim) => {
   try {
     console.log('Fetching enrolled courses for NIM:', nim);
-    const response = await fetch('http://localhost:1337/api/undangan-mahasiswas?populate=*');
+    const response = await fetch(`${API_BASE_URL}/undangan-mahasiswas?populate=*`);
     if (!response.ok) {
       throw new Error(`Failed to fetch enrolled courses: ${response.statusText}`);
     }
     const data = await response.json();
     console.log('Undangan Mahasiswa API response:', JSON.stringify(data, null, 2));
 
-    const mahasiswaResponse = await fetch('http://localhost:1337/api/mahasiswas');
+    const mahasiswaResponse = await fetch(`${API_BASE_URL}/mahasiswas`);
     if (!mahasiswaResponse.ok) {
       throw new Error(`Failed to fetch student data: ${mahasiswaResponse.statusText}`);
     }
@@ -51,7 +53,7 @@ export const fetchEnrolledCourses = async (nim) => {
 export const fetchCourseDetail = async (courseCode, nim) => {
   try {
     console.log('Fetching course detail for code:', courseCode, 'and NIM:', nim);
-    const matakuliahResponse = await fetch('http://localhost:1337/api/matakuliahs?populate=*');
+    const matakuliahResponse = await fetch(`${API_BASE_URL}/matakuliahs?populate=*`);
     if (!matakuliahResponse.ok) {
       throw new Error(`Failed to fetch course details: ${matakuliahResponse.statusText}`);
     }
@@ -64,14 +66,14 @@ export const fetchCourseDetail = async (courseCode, nim) => {
     }
     console.log('Found course:', course);
 
-    const materisResponse = await fetch('http://localhost:1337/api/materis?populate=*');
+    const materisResponse = await fetch(`${API_BASE_URL}/materis?populate=*`);
     if (!materisResponse.ok) {
       throw new Error(`Failed to fetch materials: ${materisResponse.statusText}`);
     }
     const materisData = await materisResponse.json();
     console.log('Materis API response:', JSON.stringify(materisData, null, 2));
 
-    const mahasiswaResponse = await fetch('http://localhost:1337/api/mahasiswas');
+    const mahasiswaResponse = await fetch(`${API_BASE_URL}/mahasiswas`);
     if (!mahasiswaResponse.ok) {
       throw new Error(`Failed to fetch student data: ${mahasiswaResponse.statusText}`);
     }
@@ -83,15 +85,14 @@ export const fetchCourseDetail = async (courseCode, nim) => {
     }
     console.log('Found student:', student);
 
-    const progressResponse = await fetch('http://localhost:1337/api/progress-belajars?populate=*');
+    const progressResponse = await fetch(`${API_BASE_URL}/progress-belajars?populate=*`);
     if (!progressResponse.ok) {
       throw new Error(`Failed to fetch progress data: ${progressResponse.statusText}`);
     }
     const progressData = await progressResponse.json();
     console.log('Progress API response:', JSON.stringify(progressData, null, 2));
 
-    // Modified quizzes fetch
-    const quizzesResponse = await fetch('http://localhost:1337/api/kuises?populate[0]=soal_kuis&populate[1]=pertemuan');
+    const quizzesResponse = await fetch(`${API_BASE_URL}/kuises?populate[0]=soal_kuis&populate[1]=pertemuan`);
     if (!quizzesResponse.ok) {
       throw new Error(`Failed to fetch quizzes: ${quizzesResponse.statusText}`);
     }
@@ -164,7 +165,7 @@ export const fetchCourseDetail = async (courseCode, nim) => {
               fileUrl: material.fileUrl
                 ? material.fileUrl.map((file) => ({
                     id: file.id,
-                    url: `http://localhost:1337${file.url}`,
+                    url: `${API_BASE_URL}${file.url}`,
                     name: file.name,
                     mime: file.mime,
                   }))
@@ -172,7 +173,7 @@ export const fetchCourseDetail = async (courseCode, nim) => {
               documentUrl: material.documentUrl
                 ? material.documentUrl.map((doc) => ({
                     id: doc.id,
-                    url: `http://localhost:1337${doc.url}`,
+                    url: `${API_BASE_URL}${doc.url}`,
                     name: doc.name,
                     mime: doc.mime,
                   }))
@@ -276,7 +277,7 @@ export const saveProgress = async (mahasiswaId, pertemuanId, materialId, status,
     let response;
     if (existingDocumentId) {
       console.log(`Updating progress with documentId: ${existingDocumentId}`);
-      response = await fetch(`http://localhost:1337/api/progress-belajars/${existingDocumentId}`, {
+      response = await fetch(`${API_BASE_URL}/progress-belajars/${existingDocumentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -285,7 +286,7 @@ export const saveProgress = async (mahasiswaId, pertemuanId, materialId, status,
       });
     } else {
       console.log('Creating new progress entry');
-      response = await fetch('http://localhost:1337/api/progress-belajars', {
+      response = await fetch(`${API_BASE_URL}/progress-belajars`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

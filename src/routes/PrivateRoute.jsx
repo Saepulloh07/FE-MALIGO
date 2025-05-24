@@ -36,7 +36,7 @@ const PrivateRoute = ({ requiredRole }) => {
       case 'dosen':
         return <Navigate to="/dosen" replace />;
       case 'admin':
-        window.location.href = 'http://localhost:1337/admin';
+        window.location.href = 'http://103.134.154.209:1337/admin';
         return null;
       default:
         enqueueSnackbar('Role pengguna tidak valid.', { variant: 'error' });

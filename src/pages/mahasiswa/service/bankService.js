@@ -1,7 +1,7 @@
 /**
  * Service functions for interacting with the thesis bank API
  */
-const API_BASE_URL = 'http://localhost:1337/api'; // Sesuaikan jika backend di host lain
+const API_BASE_URL = import.meta.env.VITE_API_URL // Sesuaikan jika backend di host lain
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
-const STRAPI_UPLOADS_URL = 'http://localhost:1337';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+const STRAPI_UPLOADS_URL = import.meta.env.VITE_BASED_URL;
 
 // Helper function to get auth token from localStorage
 const getAuthToken = () => {
@@ -50,7 +50,7 @@ export const fetchAllTheses = async (page = 1, pageSize = 10, filters = {}) => {
       params['sort[0]'] = filters.sortBy === 'newest' ? 'createdAt:desc' : 'year:desc';
     }
 
-    const response = await axios.get(`${API_URL}/theses`, { params });
+    const response = await axios.get(`${API_BASE_URL}/theses`, { params });
     return {
       data: response.data.data.map(formatThesisData),
       totalPages: response.data.meta.pagination.pageCount,
@@ -67,7 +67,7 @@ export const fetchAllTheses = async (page = 1, pageSize = 10, filters = {}) => {
 // Search theses
 export const searchTheses = async (keyword) => {
   try {
-    const response = await axios.get(`${API_URL}/theses`, {
+    const response = await axios.get(`${API_BASE_URL}/theses`, {
       params: {
         'filters[title][$containsi]': keyword,
         'populate[0]': 'program_studi',
@@ -83,7 +83,7 @@ export const searchTheses = async (keyword) => {
 // Fetch filter options for program_studi, year, and category
 export const fetchFilterOptions = async () => {
   try {
-    const response = await axios.get(`${API_URL}/theses`, {
+    const response = await axios.get(`${API_BASE_URL}/theses`, {
       params: {
         'populate[0]': 'program_studi',
       },
@@ -113,7 +113,7 @@ export const fetchFilterOptions = async () => {
 export const downloadThesis = async (thesisId) => {
   try {
     // First, verify the thesis exists using the collection endpoint
-    const checkUrl = `${API_URL}/theses?filters[id][$eq]=${thesisId}&populate[0]=file`;
+    const checkUrl = `${API_BASE_URL}/theses?filters[id][$eq]=${thesisId}&populate[0]=file`;
     console.log('Checking thesis existence:', checkUrl);
 
     const token = getAuthToken();
